@@ -53,13 +53,16 @@ export class BorrowedBookComponent implements OnInit {
   delete(borrowedBook: IBorrowedBook): void {
     const modalRef = this.modalService.open(BorrowedBookDeleteDialogComponent, { size: 'lg', backdrop: 'static' });
     modalRef.componentInstance.borrowedBook = borrowedBook;
-    // unsubscribe not needed because closed completes on modal close
     modalRef.closed
       .pipe(
         filter(reason => reason === ITEM_DELETED_EVENT),
         tap(() => this.load()),
       )
       .subscribe();
+  }
+
+  returnBook(borrowedBook: IBorrowedBook): void {
+    this.borrowedBookService.returnBook(borrowedBook.id).subscribe(() => this.load());
   }
 
   load(): void {

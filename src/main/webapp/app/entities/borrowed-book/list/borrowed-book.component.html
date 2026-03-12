@@ -9,6 +9,7 @@
       </button>
 
       <button
+        *jhiHasAnyAuthority="'ROLE_ADMIN'"
         id="jh-create-entity"
         data-cy="entityCreateButton"
         class="btn btn-primary jh-create-entity create-borrowed-book"
@@ -98,14 +99,35 @@
                     <span class="d-none d-md-inline" jhiTranslate="entity.action.view">View</span>
                   </a>
 
-                  <a [routerLink]="['/borrowed-book', borrowedBook.id, 'edit']" class="btn btn-primary btn-sm" data-cy="entityEditButton">
+                  <a
+                    *jhiHasAnyAuthority="'ROLE_ADMIN'"
+                    [routerLink]="['/borrowed-book', borrowedBook.id, 'edit']"
+                    class="btn btn-primary btn-sm"
+                    data-cy="entityEditButton"
+                  >
                     <fa-icon icon="pencil-alt"></fa-icon>
                     <span class="d-none d-md-inline" jhiTranslate="entity.action.edit">Edit</span>
                   </a>
 
-                  <button type="submit" (click)="delete(borrowedBook)" class="btn btn-danger btn-sm" data-cy="entityDeleteButton">
+                  <button
+                    *jhiHasAnyAuthority="'ROLE_ADMIN'"
+                    type="submit"
+                    (click)="delete(borrowedBook)"
+                    class="btn btn-danger btn-sm"
+                    data-cy="entityDeleteButton"
+                  >
                     <fa-icon icon="times"></fa-icon>
                     <span class="d-none d-md-inline" jhiTranslate="entity.action.delete">Delete</span>
+                  </button>
+
+                  <button
+                    *jhiHasAnyAuthority="['ROLE_ADMIN', 'ROLE_LIBRARIAN']"
+                    type="button"
+                    (click)="returnBook(borrowedBook)"
+                    class="btn btn-success btn-sm"
+                  >
+                    <fa-icon icon="undo"></fa-icon>
+                    <span class="d-none d-md-inline">Return</span>
                   </button>
                 </div>
               </td>

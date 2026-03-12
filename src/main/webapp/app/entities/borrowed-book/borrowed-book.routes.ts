@@ -10,6 +10,7 @@ const borrowedBookRoute: Routes = [
     loadComponent: () => import('./list/borrowed-book.component').then(m => m.BorrowedBookComponent),
     data: {
       defaultSort: `id,${ASC}`,
+      authorities: ['ROLE_ADMIN', 'ROLE_LIBRARIAN'],
     },
     canActivate: [UserRouteAccessService],
   },
@@ -19,6 +20,9 @@ const borrowedBookRoute: Routes = [
     resolve: {
       borrowedBook: BorrowedBookResolve,
     },
+    data: {
+      authorities: ['ROLE_ADMIN', 'ROLE_LIBRARIAN'],
+    },
     canActivate: [UserRouteAccessService],
   },
   {
@@ -27,6 +31,9 @@ const borrowedBookRoute: Routes = [
     resolve: {
       borrowedBook: BorrowedBookResolve,
     },
+    data: {
+      authorities: ['ROLE_ADMIN'],
+    },
     canActivate: [UserRouteAccessService],
   },
   {
@@ -34,6 +41,9 @@ const borrowedBookRoute: Routes = [
     loadComponent: () => import('./update/borrowed-book-update.component').then(m => m.BorrowedBookUpdateComponent),
     resolve: {
       borrowedBook: BorrowedBookResolve,
+    },
+    data: {
+      authorities: ['ROLE_ADMIN'],
     },
     canActivate: [UserRouteAccessService],
   },

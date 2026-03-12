@@ -17,9 +17,7 @@ type RestOf<T extends IBorrowedBook | NewBorrowedBook> = Omit<T, 'borrowDate'> &
 };
 
 export type RestBorrowedBook = RestOf<IBorrowedBook>;
-
 export type NewRestBorrowedBook = RestOf<NewBorrowedBook>;
-
 export type PartialUpdateRestBorrowedBook = RestOf<PartialUpdateBorrowedBook>;
 
 export type EntityResponseType = HttpResponse<IBorrowedBook>;
@@ -68,6 +66,21 @@ export class BorrowedBookService {
 
   delete(id: number): Observable<HttpResponse<{}>> {
     return this.http.delete(`${this.resourceUrl}/${id}`, { observe: 'response' });
+  }
+
+  // ✅ borrow
+  borrow(borrowedBook: NewBorrowedBook): Observable<EntityResponseType> {
+    const copy = this.convertDateFromClient(borrowedBook);
+    return this.http
+      .post<RestBorrowedBook>(`${this.resourceUrl}/borrow`, copy, { observe: 'response' })
+      .pipe(map(res => this.convertResponseFromServer(res)));
+  }
+
+  // ✅ return
+  returnBook(id: number): Observable<EntityResponseType> {
+    return this.http
+      .delete<RestBorrowedBook>(`${this.resourceUrl}/return/${id}`, { observe: 'response' })
+      .pipe(map(res => this.convertResponseFromServer(res)));
   }
 
   getBorrowedBookIdentifier(borrowedBook: Pick<IBorrowedBook, 'id'>): number {

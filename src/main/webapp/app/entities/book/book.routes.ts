@@ -10,6 +10,7 @@ const bookRoute: Routes = [
     loadComponent: () => import('./list/book.component').then(m => m.BookComponent),
     data: {
       defaultSort: `id,${ASC}`,
+      authorities: [],
     },
     canActivate: [UserRouteAccessService],
   },
@@ -19,6 +20,9 @@ const bookRoute: Routes = [
     resolve: {
       book: BookResolve,
     },
+    data: {
+      authorities: [],
+    },
     canActivate: [UserRouteAccessService],
   },
   {
@@ -27,6 +31,9 @@ const bookRoute: Routes = [
     resolve: {
       book: BookResolve,
     },
+    data: {
+      authorities: ['ROLE_ADMIN'],
+    },
     canActivate: [UserRouteAccessService],
   },
   {
@@ -34,6 +41,9 @@ const bookRoute: Routes = [
     loadComponent: () => import('./update/book-update.component').then(m => m.BookUpdateComponent),
     resolve: {
       book: BookResolve,
+    },
+    data: {
+      authorities: ['ROLE_ADMIN'],
     },
     canActivate: [UserRouteAccessService],
   },

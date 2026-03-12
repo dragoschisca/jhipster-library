@@ -14,6 +14,9 @@ import { DEFAULT_SORT_DATA, ITEM_DELETED_EVENT, SORT } from 'app/config/navigati
 import { IBook } from '../book.model';
 import { BookService, EntityArrayResponseType } from '../service/book.service';
 import { BookDeleteDialogComponent } from '../delete/book-delete-dialog.component';
+import { BorrowedBookService } from 'app/entities/borrowed-book/service/borrowed-book.service';
+import { NewBorrowedBook } from 'app/entities/borrowed-book/borrowed-book.model';
+import { AccountService } from 'app/core/auth/account.service';
 
 @Component({
   selector: 'jhi-book',
@@ -33,6 +36,8 @@ export class BookComponent implements OnInit {
 
   public readonly router = inject(Router);
   protected readonly bookService = inject(BookService);
+  protected readonly borrowedBookService = inject(BorrowedBookService);
+  protected readonly accountService = inject(AccountService);
   protected readonly activatedRoute = inject(ActivatedRoute);
   protected readonly sortService = inject(SortService);
   protected modalService = inject(NgbModal);
@@ -52,13 +57,46 @@ export class BookComponent implements OnInit {
   delete(book: IBook): void {
     const modalRef = this.modalService.open(BookDeleteDialogComponent, { size: 'lg', backdrop: 'static' });
     modalRef.componentInstance.book = book;
-    // unsubscribe not needed because closed completes on modal close
     modalRef.closed
       .pipe(
         filter(reason => reason === ITEM_DELETED_EVENT),
         tap(() => this.load()),
       )
       .subscribe();
+  }
+
+  // ✅ Borrow (eliberare)
+  borrow(book: IBook): void {
+    if (!book.id || !book.isbn) {
+      return;
+    }
+    if (book.copies !== undefined && book.copies !== null && book.copies <= 0) {
+      alert('Nu mai sunt exemplare disponibile.');
+      return;
+    }
+    const clientIdInput = prompt('ID client:');
+    if (!clientIdInput) {
+      return;
+    }
+    const clientId = Number(clientIdInput);
+    if (Number.isNaN(clientId)) {
+      alert('ID client invalid.');
+      return;
+    }
+
+    const payload: NewBorrowedBook = {
+      id: null,
+      bookIsbn: book.isbn,
+      book: { id: book.id, isbn: book.isbn },
+      client: { id: clientId, firstName: '' },
+    };
+
+    this.borrowedBookService.borrow(payload).subscribe(() => this.load());
+  }
+
+  // ✅ Afișăm butonul pentru toți, EXCEPT ROLE_USER
+  showBorrowButton(): boolean {
+    return !this.accountService.hasAnyAuthority('ROLE_USER');
   }
 
   load(): void {

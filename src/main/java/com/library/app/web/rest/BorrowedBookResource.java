@@ -49,7 +49,7 @@ public class BorrowedBookResource {
     }
 
     @PostMapping("")
-    @PreAuthorize("hasAnyAuthority('ROLE_ADMIN','ROLE_LIBRARIAN')")
+    @PreAuthorize("hasAuthority('ROLE_ADMIN')")
     public ResponseEntity<BorrowedBookDTO> createBorrowedBook(@Valid @RequestBody BorrowedBookDTO borrowedBookDTO)
         throws URISyntaxException {
         LOG.debug("REST request to save BorrowedBook : {}", borrowedBookDTO);
@@ -63,7 +63,7 @@ public class BorrowedBookResource {
     }
 
     @PutMapping("/{id}")
-    @PreAuthorize("hasAnyAuthority('ROLE_ADMIN','ROLE_LIBRARIAN')")
+    @PreAuthorize("hasAuthority('ROLE_ADMIN')")
     public ResponseEntity<BorrowedBookDTO> updateBorrowedBook(
         @PathVariable(value = "id", required = false) final Long id,
         @Valid @RequestBody BorrowedBookDTO borrowedBookDTO
@@ -87,7 +87,7 @@ public class BorrowedBookResource {
     }
 
     @PatchMapping(value = "/{id}", consumes = { "application/json", "application/merge-patch+json" })
-    @PreAuthorize("hasAnyAuthority('ROLE_ADMIN','ROLE_LIBRARIAN')")
+    @PreAuthorize("hasAuthority('ROLE_ADMIN')")
     public ResponseEntity<BorrowedBookDTO> partialUpdateBorrowedBook(
         @PathVariable(value = "id", required = false) final Long id,
         @NotNull @RequestBody BorrowedBookDTO borrowedBookDTO
@@ -138,7 +138,7 @@ public class BorrowedBookResource {
     }
 
     @DeleteMapping("/{id}")
-    @PreAuthorize("hasAnyAuthority('ROLE_ADMIN','ROLE_LIBRARIAN')")
+    @PreAuthorize("hasAuthority('ROLE_ADMIN')")
     public ResponseEntity<Void> deleteBorrowedBook(@PathVariable("id") Long id) {
         LOG.debug("REST request to delete BorrowedBook : {}", id);
         borrowedBookService.delete(id);
