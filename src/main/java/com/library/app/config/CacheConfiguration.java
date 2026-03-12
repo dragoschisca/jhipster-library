@@ -37,6 +37,12 @@ public class CacheConfiguration {
             createCache(cm, com.library.app.repository.UserRepository.USERS_BY_LOGIN_CACHE);
             createCache(cm, com.library.app.repository.UserRepository.USERS_BY_EMAIL_CACHE);
             createCache(cm, com.library.app.domain.Authority.class.getName());
+            createCache(cm, com.library.app.domain.Author.class.getName());
+            createCache(cm, com.library.app.domain.Publisher.class.getName());
+            createCache(cm, com.library.app.domain.Book.class.getName());
+            createCache(cm, com.library.app.domain.Client.class.getName());
+            createCache(cm, com.library.app.domain.BorrowedBook.class.getName());
+            createCache(cm, com.library.app.domain.BookAuthor.class.getName());
             // jhipster-needle-caffeine-add-entry
         };
     }

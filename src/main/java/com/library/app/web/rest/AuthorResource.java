@@ -18,6 +18,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import tech.jhipster.web.util.HeaderUtil;
@@ -47,14 +48,8 @@ public class AuthorResource {
         this.authorRepository = authorRepository;
     }
 
-    /**
-     * {@code POST  /authors} : Create a new author.
-     *
-     * @param authorDTO the authorDTO to create.
-     * @return the {@link ResponseEntity} with status {@code 201 (Created)} and with body the new authorDTO, or with status {@code 400 (Bad Request)} if the author has already an ID.
-     * @throws URISyntaxException if the Location URI syntax is incorrect.
-     */
     @PostMapping("")
+    @PreAuthorize("hasAnyAuthority('ROLE_ADMIN','ROLE_LIBRARIAN')")
     public ResponseEntity<AuthorDTO> createAuthor(@Valid @RequestBody AuthorDTO authorDTO) throws URISyntaxException {
         LOG.debug("REST request to save Author : {}", authorDTO);
         if (authorDTO.getId() != null) {
@@ -66,17 +61,8 @@ public class AuthorResource {
             .body(authorDTO);
     }
 
-    /**
-     * {@code PUT  /authors/:id} : Updates an existing author.
-     *
-     * @param id the id of the authorDTO to save.
-     * @param authorDTO the authorDTO to update.
-     * @return the {@link ResponseEntity} with status {@code 200 (OK)} and with body the updated authorDTO,
-     * or with status {@code 400 (Bad Request)} if the authorDTO is not valid,
-     * or with status {@code 500 (Internal Server Error)} if the authorDTO couldn't be updated.
-     * @throws URISyntaxException if the Location URI syntax is incorrect.
-     */
     @PutMapping("/{id}")
+    @PreAuthorize("hasAnyAuthority('ROLE_ADMIN','ROLE_LIBRARIAN')")
     public ResponseEntity<AuthorDTO> updateAuthor(
         @PathVariable(value = "id", required = false) final Long id,
         @Valid @RequestBody AuthorDTO authorDTO
@@ -99,18 +85,8 @@ public class AuthorResource {
             .body(authorDTO);
     }
 
-    /**
-     * {@code PATCH  /authors/:id} : Partial updates given fields of an existing author, field will ignore if it is null
-     *
-     * @param id the id of the authorDTO to save.
-     * @param authorDTO the authorDTO to update.
-     * @return the {@link ResponseEntity} with status {@code 200 (OK)} and with body the updated authorDTO,
-     * or with status {@code 400 (Bad Request)} if the authorDTO is not valid,
-     * or with status {@code 404 (Not Found)} if the authorDTO is not found,
-     * or with status {@code 500 (Internal Server Error)} if the authorDTO couldn't be updated.
-     * @throws URISyntaxException if the Location URI syntax is incorrect.
-     */
     @PatchMapping(value = "/{id}", consumes = { "application/json", "application/merge-patch+json" })
+    @PreAuthorize("hasAnyAuthority('ROLE_ADMIN','ROLE_LIBRARIAN')")
     public ResponseEntity<AuthorDTO> partialUpdateAuthor(
         @PathVariable(value = "id", required = false) final Long id,
         @NotNull @RequestBody AuthorDTO authorDTO
@@ -135,13 +111,8 @@ public class AuthorResource {
         );
     }
 
-    /**
-     * {@code GET  /authors} : get all the authors.
-     *
-     * @param pageable the pagination information.
-     * @return the {@link ResponseEntity} with status {@code 200 (OK)} and the list of authors in body.
-     */
     @GetMapping("")
+    @PreAuthorize("hasAnyAuthority('ROLE_ADMIN','ROLE_LIBRARIAN','ROLE_USER')")
     public ResponseEntity<List<AuthorDTO>> getAllAuthors(@org.springdoc.core.annotations.ParameterObject Pageable pageable) {
         LOG.debug("REST request to get a page of Authors");
         Page<AuthorDTO> page = authorService.findAll(pageable);
@@ -149,26 +120,16 @@ public class AuthorResource {
         return ResponseEntity.ok().headers(headers).body(page.getContent());
     }
 
-    /**
-     * {@code GET  /authors/:id} : get the "id" author.
-     *
-     * @param id the id of the authorDTO to retrieve.
-     * @return the {@link ResponseEntity} with status {@code 200 (OK)} and with body the authorDTO, or with status {@code 404 (Not Found)}.
-     */
     @GetMapping("/{id}")
+    @PreAuthorize("hasAnyAuthority('ROLE_ADMIN','ROLE_LIBRARIAN','ROLE_USER')")
     public ResponseEntity<AuthorDTO> getAuthor(@PathVariable("id") Long id) {
         LOG.debug("REST request to get Author : {}", id);
         Optional<AuthorDTO> authorDTO = authorService.findOne(id);
         return ResponseUtil.wrapOrNotFound(authorDTO);
     }
 
-    /**
-     * {@code DELETE  /authors/:id} : delete the "id" author.
-     *
-     * @param id the id of the authorDTO to delete.
-     * @return the {@link ResponseEntity} with status {@code 204 (NO_CONTENT)}.
-     */
     @DeleteMapping("/{id}")
+    @PreAuthorize("hasAnyAuthority('ROLE_ADMIN','ROLE_LIBRARIAN')")
     public ResponseEntity<Void> deleteAuthor(@PathVariable("id") Long id) {
         LOG.debug("REST request to delete Author : {}", id);
         authorService.delete(id);

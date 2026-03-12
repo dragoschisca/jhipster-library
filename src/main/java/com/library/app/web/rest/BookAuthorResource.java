@@ -15,6 +15,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import tech.jhipster.web.util.HeaderUtil;
 import tech.jhipster.web.util.ResponseUtil;
@@ -42,14 +43,8 @@ public class BookAuthorResource {
         this.bookAuthorRepository = bookAuthorRepository;
     }
 
-    /**
-     * {@code POST  /book-authors} : Create a new bookAuthor.
-     *
-     * @param bookAuthorDTO the bookAuthorDTO to create.
-     * @return the {@link ResponseEntity} with status {@code 201 (Created)} and with body the new bookAuthorDTO, or with status {@code 400 (Bad Request)} if the bookAuthor has already an ID.
-     * @throws URISyntaxException if the Location URI syntax is incorrect.
-     */
     @PostMapping("")
+    @PreAuthorize("hasAnyAuthority('ROLE_ADMIN','ROLE_LIBRARIAN')")
     public ResponseEntity<BookAuthorDTO> createBookAuthor(@Valid @RequestBody BookAuthorDTO bookAuthorDTO) throws URISyntaxException {
         LOG.debug("REST request to save BookAuthor : {}", bookAuthorDTO);
         if (bookAuthorDTO.getId() != null) {
@@ -61,17 +56,8 @@ public class BookAuthorResource {
             .body(bookAuthorDTO);
     }
 
-    /**
-     * {@code PUT  /book-authors/:id} : Updates an existing bookAuthor.
-     *
-     * @param id the id of the bookAuthorDTO to save.
-     * @param bookAuthorDTO the bookAuthorDTO to update.
-     * @return the {@link ResponseEntity} with status {@code 200 (OK)} and with body the updated bookAuthorDTO,
-     * or with status {@code 400 (Bad Request)} if the bookAuthorDTO is not valid,
-     * or with status {@code 500 (Internal Server Error)} if the bookAuthorDTO couldn't be updated.
-     * @throws URISyntaxException if the Location URI syntax is incorrect.
-     */
     @PutMapping("/{id}")
+    @PreAuthorize("hasAnyAuthority('ROLE_ADMIN','ROLE_LIBRARIAN')")
     public ResponseEntity<BookAuthorDTO> updateBookAuthor(
         @PathVariable(value = "id", required = false) final Long id,
         @Valid @RequestBody BookAuthorDTO bookAuthorDTO
@@ -94,18 +80,8 @@ public class BookAuthorResource {
             .body(bookAuthorDTO);
     }
 
-    /**
-     * {@code PATCH  /book-authors/:id} : Partial updates given fields of an existing bookAuthor, field will ignore if it is null
-     *
-     * @param id the id of the bookAuthorDTO to save.
-     * @param bookAuthorDTO the bookAuthorDTO to update.
-     * @return the {@link ResponseEntity} with status {@code 200 (OK)} and with body the updated bookAuthorDTO,
-     * or with status {@code 400 (Bad Request)} if the bookAuthorDTO is not valid,
-     * or with status {@code 404 (Not Found)} if the bookAuthorDTO is not found,
-     * or with status {@code 500 (Internal Server Error)} if the bookAuthorDTO couldn't be updated.
-     * @throws URISyntaxException if the Location URI syntax is incorrect.
-     */
     @PatchMapping(value = "/{id}", consumes = { "application/json", "application/merge-patch+json" })
+    @PreAuthorize("hasAnyAuthority('ROLE_ADMIN','ROLE_LIBRARIAN')")
     public ResponseEntity<BookAuthorDTO> partialUpdateBookAuthor(
         @PathVariable(value = "id", required = false) final Long id,
         @NotNull @RequestBody BookAuthorDTO bookAuthorDTO
@@ -130,13 +106,8 @@ public class BookAuthorResource {
         );
     }
 
-    /**
-     * {@code GET  /book-authors} : get all the bookAuthors.
-     *
-     * @param eagerload flag to eager load entities from relationships (This is applicable for many-to-many).
-     * @return the {@link ResponseEntity} with status {@code 200 (OK)} and the list of bookAuthors in body.
-     */
     @GetMapping("")
+    @PreAuthorize("hasAnyAuthority('ROLE_ADMIN','ROLE_LIBRARIAN','ROLE_USER')")
     public List<BookAuthorDTO> getAllBookAuthors(
         @RequestParam(name = "eagerload", required = false, defaultValue = "true") boolean eagerload
     ) {
@@ -144,26 +115,16 @@ public class BookAuthorResource {
         return bookAuthorService.findAll();
     }
 
-    /**
-     * {@code GET  /book-authors/:id} : get the "id" bookAuthor.
-     *
-     * @param id the id of the bookAuthorDTO to retrieve.
-     * @return the {@link ResponseEntity} with status {@code 200 (OK)} and with body the bookAuthorDTO, or with status {@code 404 (Not Found)}.
-     */
     @GetMapping("/{id}")
+    @PreAuthorize("hasAnyAuthority('ROLE_ADMIN','ROLE_LIBRARIAN','ROLE_USER')")
     public ResponseEntity<BookAuthorDTO> getBookAuthor(@PathVariable("id") Long id) {
         LOG.debug("REST request to get BookAuthor : {}", id);
         Optional<BookAuthorDTO> bookAuthorDTO = bookAuthorService.findOne(id);
         return ResponseUtil.wrapOrNotFound(bookAuthorDTO);
     }
 
-    /**
-     * {@code DELETE  /book-authors/:id} : delete the "id" bookAuthor.
-     *
-     * @param id the id of the bookAuthorDTO to delete.
-     * @return the {@link ResponseEntity} with status {@code 204 (NO_CONTENT)}.
-     */
     @DeleteMapping("/{id}")
+    @PreAuthorize("hasAnyAuthority('ROLE_ADMIN','ROLE_LIBRARIAN')")
     public ResponseEntity<Void> deleteBookAuthor(@PathVariable("id") Long id) {
         LOG.debug("REST request to delete BookAuthor : {}", id);
         bookAuthorService.delete(id);

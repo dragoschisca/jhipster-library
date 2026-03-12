@@ -18,6 +18,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import tech.jhipster.web.util.HeaderUtil;
@@ -49,12 +50,9 @@ public class BookResource {
 
     /**
      * {@code POST  /books} : Create a new book.
-     *
-     * @param bookDTO the bookDTO to create.
-     * @return the {@link ResponseEntity} with status {@code 201 (Created)} and with body the new bookDTO, or with status {@code 400 (Bad Request)} if the book has already an ID.
-     * @throws URISyntaxException if the Location URI syntax is incorrect.
      */
     @PostMapping("")
+    @PreAuthorize("hasAnyAuthority('ROLE_ADMIN','ROLE_LIBRARIAN')")
     public ResponseEntity<BookDTO> createBook(@Valid @RequestBody BookDTO bookDTO) throws URISyntaxException {
         LOG.debug("REST request to save Book : {}", bookDTO);
         if (bookDTO.getId() != null) {
@@ -68,15 +66,9 @@ public class BookResource {
 
     /**
      * {@code PUT  /books/:id} : Updates an existing book.
-     *
-     * @param id the id of the bookDTO to save.
-     * @param bookDTO the bookDTO to update.
-     * @return the {@link ResponseEntity} with status {@code 200 (OK)} and with body the updated bookDTO,
-     * or with status {@code 400 (Bad Request)} if the bookDTO is not valid,
-     * or with status {@code 500 (Internal Server Error)} if the bookDTO couldn't be updated.
-     * @throws URISyntaxException if the Location URI syntax is incorrect.
      */
     @PutMapping("/{id}")
+    @PreAuthorize("hasAnyAuthority('ROLE_ADMIN','ROLE_LIBRARIAN')")
     public ResponseEntity<BookDTO> updateBook(
         @PathVariable(value = "id", required = false) final Long id,
         @Valid @RequestBody BookDTO bookDTO
@@ -100,17 +92,10 @@ public class BookResource {
     }
 
     /**
-     * {@code PATCH  /books/:id} : Partial updates given fields of an existing book, field will ignore if it is null
-     *
-     * @param id the id of the bookDTO to save.
-     * @param bookDTO the bookDTO to update.
-     * @return the {@link ResponseEntity} with status {@code 200 (OK)} and with body the updated bookDTO,
-     * or with status {@code 400 (Bad Request)} if the bookDTO is not valid,
-     * or with status {@code 404 (Not Found)} if the bookDTO is not found,
-     * or with status {@code 500 (Internal Server Error)} if the bookDTO couldn't be updated.
-     * @throws URISyntaxException if the Location URI syntax is incorrect.
+     * {@code PATCH  /books/:id} : Partial updates given fields of an existing book.
      */
     @PatchMapping(value = "/{id}", consumes = { "application/json", "application/merge-patch+json" })
+    @PreAuthorize("hasAnyAuthority('ROLE_ADMIN','ROLE_LIBRARIAN')")
     public ResponseEntity<BookDTO> partialUpdateBook(
         @PathVariable(value = "id", required = false) final Long id,
         @NotNull @RequestBody BookDTO bookDTO
@@ -137,12 +122,9 @@ public class BookResource {
 
     /**
      * {@code GET  /books} : get all the books.
-     *
-     * @param pageable the pagination information.
-     * @param eagerload flag to eager load entities from relationships (This is applicable for many-to-many).
-     * @return the {@link ResponseEntity} with status {@code 200 (OK)} and the list of books in body.
      */
     @GetMapping("")
+    @PreAuthorize("hasAnyAuthority('ROLE_ADMIN','ROLE_LIBRARIAN','ROLE_USER')")
     public ResponseEntity<List<BookDTO>> getAllBooks(
         @org.springdoc.core.annotations.ParameterObject Pageable pageable,
         @RequestParam(name = "eagerload", required = false, defaultValue = "true") boolean eagerload
@@ -160,11 +142,9 @@ public class BookResource {
 
     /**
      * {@code GET  /books/:id} : get the "id" book.
-     *
-     * @param id the id of the bookDTO to retrieve.
-     * @return the {@link ResponseEntity} with status {@code 200 (OK)} and with body the bookDTO, or with status {@code 404 (Not Found)}.
      */
     @GetMapping("/{id}")
+    @PreAuthorize("hasAnyAuthority('ROLE_ADMIN','ROLE_LIBRARIAN','ROLE_USER')")
     public ResponseEntity<BookDTO> getBook(@PathVariable("id") Long id) {
         LOG.debug("REST request to get Book : {}", id);
         Optional<BookDTO> bookDTO = bookService.findOne(id);
@@ -173,11 +153,9 @@ public class BookResource {
 
     /**
      * {@code DELETE  /books/:id} : delete the "id" book.
-     *
-     * @param id the id of the bookDTO to delete.
-     * @return the {@link ResponseEntity} with status {@code 204 (NO_CONTENT)}.
      */
     @DeleteMapping("/{id}")
+    @PreAuthorize("hasAnyAuthority('ROLE_ADMIN','ROLE_LIBRARIAN')")
     public ResponseEntity<Void> deleteBook(@PathVariable("id") Long id) {
         LOG.debug("REST request to delete Book : {}", id);
         bookService.delete(id);

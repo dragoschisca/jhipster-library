@@ -48,14 +48,8 @@ public class BorrowedBookResource {
         this.borrowedBookRepository = borrowedBookRepository;
     }
 
-    /**
-     * {@code POST  /borrowed-books} : Create a new borrowedBook.
-     *
-     * @param borrowedBookDTO the borrowedBookDTO to create.
-     * @return the {@link ResponseEntity} with status {@code 201 (Created)} and with body the new borrowedBookDTO, or with status {@code 400 (Bad Request)} if the borrowedBook has already an ID.
-     * @throws URISyntaxException if the Location URI syntax is incorrect.
-     */
     @PostMapping("")
+    @PreAuthorize("hasAnyAuthority('ROLE_ADMIN','ROLE_LIBRARIAN')")
     public ResponseEntity<BorrowedBookDTO> createBorrowedBook(@Valid @RequestBody BorrowedBookDTO borrowedBookDTO)
         throws URISyntaxException {
         LOG.debug("REST request to save BorrowedBook : {}", borrowedBookDTO);
@@ -68,17 +62,8 @@ public class BorrowedBookResource {
             .body(borrowedBookDTO);
     }
 
-    /**
-     * {@code PUT  /borrowed-books/:id} : Updates an existing borrowedBook.
-     *
-     * @param id the id of the borrowedBookDTO to save.
-     * @param borrowedBookDTO the borrowedBookDTO to update.
-     * @return the {@link ResponseEntity} with status {@code 200 (OK)} and with body the updated borrowedBookDTO,
-     * or with status {@code 400 (Bad Request)} if the borrowedBookDTO is not valid,
-     * or with status {@code 500 (Internal Server Error)} if the borrowedBookDTO couldn't be updated.
-     * @throws URISyntaxException if the Location URI syntax is incorrect.
-     */
     @PutMapping("/{id}")
+    @PreAuthorize("hasAnyAuthority('ROLE_ADMIN','ROLE_LIBRARIAN')")
     public ResponseEntity<BorrowedBookDTO> updateBorrowedBook(
         @PathVariable(value = "id", required = false) final Long id,
         @Valid @RequestBody BorrowedBookDTO borrowedBookDTO
@@ -101,18 +86,8 @@ public class BorrowedBookResource {
             .body(borrowedBookDTO);
     }
 
-    /**
-     * {@code PATCH  /borrowed-books/:id} : Partial updates given fields of an existing borrowedBook, field will ignore if it is null
-     *
-     * @param id the id of the borrowedBookDTO to save.
-     * @param borrowedBookDTO the borrowedBookDTO to update.
-     * @return the {@link ResponseEntity} with status {@code 200 (OK)} and with body the updated borrowedBookDTO,
-     * or with status {@code 400 (Bad Request)} if the borrowedBookDTO is not valid,
-     * or with status {@code 404 (Not Found)} if the borrowedBookDTO is not found,
-     * or with status {@code 500 (Internal Server Error)} if the borrowedBookDTO couldn't be updated.
-     * @throws URISyntaxException if the Location URI syntax is incorrect.
-     */
     @PatchMapping(value = "/{id}", consumes = { "application/json", "application/merge-patch+json" })
+    @PreAuthorize("hasAnyAuthority('ROLE_ADMIN','ROLE_LIBRARIAN')")
     public ResponseEntity<BorrowedBookDTO> partialUpdateBorrowedBook(
         @PathVariable(value = "id", required = false) final Long id,
         @NotNull @RequestBody BorrowedBookDTO borrowedBookDTO
@@ -137,14 +112,8 @@ public class BorrowedBookResource {
         );
     }
 
-    /**
-     * {@code GET  /borrowed-books} : get all the borrowedBooks.
-     *
-     * @param pageable the pagination information.
-     * @param eagerload flag to eager load entities from relationships (This is applicable for many-to-many).
-     * @return the {@link ResponseEntity} with status {@code 200 (OK)} and the list of borrowedBooks in body.
-     */
     @GetMapping("")
+    @PreAuthorize("hasAnyAuthority('ROLE_ADMIN','ROLE_LIBRARIAN','ROLE_USER')")
     public ResponseEntity<List<BorrowedBookDTO>> getAllBorrowedBooks(
         @org.springdoc.core.annotations.ParameterObject Pageable pageable,
         @RequestParam(name = "eagerload", required = false, defaultValue = "true") boolean eagerload
@@ -160,26 +129,16 @@ public class BorrowedBookResource {
         return ResponseEntity.ok().headers(headers).body(page.getContent());
     }
 
-    /**
-     * {@code GET  /borrowed-books/:id} : get the "id" borrowedBook.
-     *
-     * @param id the id of the borrowedBookDTO to retrieve.
-     * @return the {@link ResponseEntity} with status {@code 200 (OK)} and with body the borrowedBookDTO, or with status {@code 404 (Not Found)}.
-     */
     @GetMapping("/{id}")
+    @PreAuthorize("hasAnyAuthority('ROLE_ADMIN','ROLE_LIBRARIAN','ROLE_USER')")
     public ResponseEntity<BorrowedBookDTO> getBorrowedBook(@PathVariable("id") Long id) {
         LOG.debug("REST request to get BorrowedBook : {}", id);
         Optional<BorrowedBookDTO> borrowedBookDTO = borrowedBookService.findOne(id);
         return ResponseUtil.wrapOrNotFound(borrowedBookDTO);
     }
 
-    /**
-     * {@code DELETE  /borrowed-books/:id} : delete the "id" borrowedBook.
-     *
-     * @param id the id of the borrowedBookDTO to delete.
-     * @return the {@link ResponseEntity} with status {@code 204 (NO_CONTENT)}.
-     */
     @DeleteMapping("/{id}")
+    @PreAuthorize("hasAnyAuthority('ROLE_ADMIN','ROLE_LIBRARIAN')")
     public ResponseEntity<Void> deleteBorrowedBook(@PathVariable("id") Long id) {
         LOG.debug("REST request to delete BorrowedBook : {}", id);
         borrowedBookService.delete(id);
@@ -188,7 +147,7 @@ public class BorrowedBookResource {
             .build();
     }
 
-    @PostMapping("/borrowed-books/borrow")
+    @PostMapping("/borrow")
     @PreAuthorize("hasAnyAuthority('ROLE_ADMIN', 'ROLE_LIBRARIAN')")
     public ResponseEntity<BorrowedBookDTO> borrowBook(@RequestBody BorrowedBookDTO borrowedBookDTO) {
         LOG.debug("REST request to borrow a Book : {}", borrowedBookDTO);
@@ -196,7 +155,7 @@ public class BorrowedBookResource {
         return ResponseEntity.ok().body(result);
     }
 
-    @DeleteMapping("/borrowed-books/return/{id}")
+    @DeleteMapping("/return/{id}")
     @PreAuthorize("hasAnyAuthority('ROLE_ADMIN', 'ROLE_LIBRARIAN')")
     public ResponseEntity<BorrowedBookDTO> returnBook(@PathVariable Long id) {
         LOG.debug("REST request to return a Book, BorrowedBook id : {}", id);
