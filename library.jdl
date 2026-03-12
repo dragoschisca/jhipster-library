@@ -1,0 +1,50 @@
+entity Book {
+  isbn String required minlength(10) maxlength(13) unique,
+  name String required maxlength(100),
+  publishYear String maxlength(4),
+  copies Integer,
+  picture String maxlength(255)
+}
+
+entity Author {
+  firstName String required maxlength(45),
+  lastName String required maxlength(45)
+}
+
+entity Publisher {
+  name String required maxlength(100)
+}
+
+entity BookAuthor {
+  bookIsbn String required maxlength(13),
+  authorId Integer required
+}
+
+entity BorrowedBook {
+  bookIsbn String required maxlength(13),
+  borrowDate LocalDate
+}
+
+entity Client {
+  firstName String required maxlength(45),
+  lastName String required maxlength(45),
+  address String maxlength(50),
+  phone String maxlength(31)
+}
+
+// Relatii
+relationship ManyToOne {
+  Book{publisher(name)} to Publisher
+  BorrowedBook{book(isbn)} to Book
+  BorrowedBook{client(firstName)} to Client
+  BookAuthor{book(isbn)} to Book
+  BookAuthor{author(firstName)} to Author
+}
+
+// CRUD pages
+paginate Book, Author, Publisher, Client, BorrowedBook with pagination
+
+// Servicii
+service Book, Author, Publisher, Client, BorrowedBook, BookAuthor with serviceImpl
+
+dto Book, Author, Publisher, Client, BorrowedBook, BookAuthor with mapstruct
