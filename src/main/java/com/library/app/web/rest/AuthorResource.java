@@ -49,7 +49,7 @@ public class AuthorResource {
     }
 
     @PostMapping("")
-    @PreAuthorize("hasAnyAuthority('ROLE_ADMIN','ROLE_LIBRARIAN')")
+    @PreAuthorize("hasAuthority('ROLE_ADMIN')")
     public ResponseEntity<AuthorDTO> createAuthor(@Valid @RequestBody AuthorDTO authorDTO) throws URISyntaxException {
         LOG.debug("REST request to save Author : {}", authorDTO);
         if (authorDTO.getId() != null) {
@@ -62,7 +62,7 @@ public class AuthorResource {
     }
 
     @PutMapping("/{id}")
-    @PreAuthorize("hasAnyAuthority('ROLE_ADMIN','ROLE_LIBRARIAN')")
+    @PreAuthorize("hasAuthority('ROLE_ADMIN')")
     public ResponseEntity<AuthorDTO> updateAuthor(
         @PathVariable(value = "id", required = false) final Long id,
         @Valid @RequestBody AuthorDTO authorDTO
@@ -86,7 +86,7 @@ public class AuthorResource {
     }
 
     @PatchMapping(value = "/{id}", consumes = { "application/json", "application/merge-patch+json" })
-    @PreAuthorize("hasAnyAuthority('ROLE_ADMIN','ROLE_LIBRARIAN')")
+    @PreAuthorize("hasAuthority('ROLE_ADMIN')")
     public ResponseEntity<AuthorDTO> partialUpdateAuthor(
         @PathVariable(value = "id", required = false) final Long id,
         @NotNull @RequestBody AuthorDTO authorDTO
@@ -112,7 +112,7 @@ public class AuthorResource {
     }
 
     @GetMapping("")
-    @PreAuthorize("hasAnyAuthority('ROLE_ADMIN','ROLE_LIBRARIAN','ROLE_USER')")
+    @PreAuthorize("hasAuthority('ROLE_ADMIN')")
     public ResponseEntity<List<AuthorDTO>> getAllAuthors(@org.springdoc.core.annotations.ParameterObject Pageable pageable) {
         LOG.debug("REST request to get a page of Authors");
         Page<AuthorDTO> page = authorService.findAll(pageable);
@@ -121,7 +121,7 @@ public class AuthorResource {
     }
 
     @GetMapping("/{id}")
-    @PreAuthorize("hasAnyAuthority('ROLE_ADMIN','ROLE_LIBRARIAN','ROLE_USER')")
+    @PreAuthorize("hasAuthority('ROLE_ADMIN')")
     public ResponseEntity<AuthorDTO> getAuthor(@PathVariable("id") Long id) {
         LOG.debug("REST request to get Author : {}", id);
         Optional<AuthorDTO> authorDTO = authorService.findOne(id);
@@ -129,7 +129,7 @@ public class AuthorResource {
     }
 
     @DeleteMapping("/{id}")
-    @PreAuthorize("hasAnyAuthority('ROLE_ADMIN','ROLE_LIBRARIAN')")
+    @PreAuthorize("hasAuthority('ROLE_ADMIN')")
     public ResponseEntity<Void> deleteAuthor(@PathVariable("id") Long id) {
         LOG.debug("REST request to delete Author : {}", id);
         authorService.delete(id);

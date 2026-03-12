@@ -14,15 +14,17 @@ import java.util.Optional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import tech.jhipster.web.util.HeaderUtil;
+import tech.jhipster.web.util.PaginationUtil;
 import tech.jhipster.web.util.ResponseUtil;
 
-/**
- * REST controller for managing {@link com.library.app.domain.BookAuthor}.
- */
 @RestController
 @RequestMapping("/api/book-authors")
 public class BookAuthorResource {
@@ -35,7 +37,6 @@ public class BookAuthorResource {
     private String applicationName;
 
     private final BookAuthorService bookAuthorService;
-
     private final BookAuthorRepository bookAuthorRepository;
 
     public BookAuthorResource(BookAuthorService bookAuthorService, BookAuthorRepository bookAuthorRepository) {
@@ -44,7 +45,7 @@ public class BookAuthorResource {
     }
 
     @PostMapping("")
-    @PreAuthorize("hasAnyAuthority('ROLE_ADMIN','ROLE_LIBRARIAN')")
+    @PreAuthorize("hasAuthority('ROLE_ADMIN')")
     public ResponseEntity<BookAuthorDTO> createBookAuthor(@Valid @RequestBody BookAuthorDTO bookAuthorDTO) throws URISyntaxException {
         LOG.debug("REST request to save BookAuthor : {}", bookAuthorDTO);
         if (bookAuthorDTO.getId() != null) {
@@ -57,7 +58,7 @@ public class BookAuthorResource {
     }
 
     @PutMapping("/{id}")
-    @PreAuthorize("hasAnyAuthority('ROLE_ADMIN','ROLE_LIBRARIAN')")
+    @PreAuthorize("hasAuthority('ROLE_ADMIN')")
     public ResponseEntity<BookAuthorDTO> updateBookAuthor(
         @PathVariable(value = "id", required = false) final Long id,
         @Valid @RequestBody BookAuthorDTO bookAuthorDTO
@@ -81,7 +82,7 @@ public class BookAuthorResource {
     }
 
     @PatchMapping(value = "/{id}", consumes = { "application/json", "application/merge-patch+json" })
-    @PreAuthorize("hasAnyAuthority('ROLE_ADMIN','ROLE_LIBRARIAN')")
+    @PreAuthorize("hasAuthority('ROLE_ADMIN')")
     public ResponseEntity<BookAuthorDTO> partialUpdateBookAuthor(
         @PathVariable(value = "id", required = false) final Long id,
         @NotNull @RequestBody BookAuthorDTO bookAuthorDTO
@@ -107,7 +108,7 @@ public class BookAuthorResource {
     }
 
     @GetMapping("")
-    @PreAuthorize("hasAnyAuthority('ROLE_ADMIN','ROLE_LIBRARIAN','ROLE_USER')")
+    @PreAuthorize("hasAuthority('ROLE_ADMIN')")
     public List<BookAuthorDTO> getAllBookAuthors(
         @RequestParam(name = "eagerload", required = false, defaultValue = "true") boolean eagerload
     ) {
@@ -116,7 +117,7 @@ public class BookAuthorResource {
     }
 
     @GetMapping("/{id}")
-    @PreAuthorize("hasAnyAuthority('ROLE_ADMIN','ROLE_LIBRARIAN','ROLE_USER')")
+    @PreAuthorize("hasAuthority('ROLE_ADMIN')")
     public ResponseEntity<BookAuthorDTO> getBookAuthor(@PathVariable("id") Long id) {
         LOG.debug("REST request to get BookAuthor : {}", id);
         Optional<BookAuthorDTO> bookAuthorDTO = bookAuthorService.findOne(id);
@@ -124,7 +125,7 @@ public class BookAuthorResource {
     }
 
     @DeleteMapping("/{id}")
-    @PreAuthorize("hasAnyAuthority('ROLE_ADMIN','ROLE_LIBRARIAN')")
+    @PreAuthorize("hasAuthority('ROLE_ADMIN')")
     public ResponseEntity<Void> deleteBookAuthor(@PathVariable("id") Long id) {
         LOG.debug("REST request to delete BookAuthor : {}", id);
         bookAuthorService.delete(id);

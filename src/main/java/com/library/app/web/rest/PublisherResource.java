@@ -18,7 +18,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.prepost.PreAuthorize; // ✅ add
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import tech.jhipster.web.util.HeaderUtil;
@@ -49,7 +49,7 @@ public class PublisherResource {
     }
 
     @PostMapping("")
-    @PreAuthorize("hasAnyAuthority('ROLE_ADMIN')")
+    @PreAuthorize("hasAuthority('ROLE_ADMIN')")
     public ResponseEntity<PublisherDTO> createPublisher(@Valid @RequestBody PublisherDTO publisherDTO) throws URISyntaxException {
         LOG.debug("REST request to save Publisher : {}", publisherDTO);
         if (publisherDTO.getId() != null) {
@@ -62,7 +62,7 @@ public class PublisherResource {
     }
 
     @PutMapping("/{id}")
-    @PreAuthorize("hasAnyAuthority('ROLE_ADMIN')")
+    @PreAuthorize("hasAuthority('ROLE_ADMIN')")
     public ResponseEntity<PublisherDTO> updatePublisher(
         @PathVariable(value = "id", required = false) final Long id,
         @Valid @RequestBody PublisherDTO publisherDTO
@@ -86,7 +86,7 @@ public class PublisherResource {
     }
 
     @PatchMapping(value = "/{id}", consumes = { "application/json", "application/merge-patch+json" })
-    @PreAuthorize("hasAnyAuthority('ROLE_ADMIN')")
+    @PreAuthorize("hasAuthority('ROLE_ADMIN')")
     public ResponseEntity<PublisherDTO> partialUpdatePublisher(
         @PathVariable(value = "id", required = false) final Long id,
         @NotNull @RequestBody PublisherDTO publisherDTO
@@ -112,7 +112,7 @@ public class PublisherResource {
     }
 
     @GetMapping("")
-    @PreAuthorize("hasAnyAuthority('ROLE_ADMIN')")
+    @PreAuthorize("hasAuthority('ROLE_ADMIN')")
     public ResponseEntity<List<PublisherDTO>> getAllPublishers(@org.springdoc.core.annotations.ParameterObject Pageable pageable) {
         LOG.debug("REST request to get a page of Publishers");
         Page<PublisherDTO> page = publisherService.findAll(pageable);
@@ -121,7 +121,7 @@ public class PublisherResource {
     }
 
     @GetMapping("/{id}")
-    @PreAuthorize("hasAnyAuthority('ROLE_ADMIN')")
+    @PreAuthorize("hasAuthority('ROLE_ADMIN')")
     public ResponseEntity<PublisherDTO> getPublisher(@PathVariable("id") Long id) {
         LOG.debug("REST request to get Publisher : {}", id);
         Optional<PublisherDTO> publisherDTO = publisherService.findOne(id);
@@ -129,7 +129,7 @@ public class PublisherResource {
     }
 
     @DeleteMapping("/{id}")
-    @PreAuthorize("hasAnyAuthority('ROLE_ADMIN')")
+    @PreAuthorize("hasAuthority('ROLE_ADMIN')")
     public ResponseEntity<Void> deletePublisher(@PathVariable("id") Long id) {
         LOG.debug("REST request to delete Publisher : {}", id);
         publisherService.delete(id);

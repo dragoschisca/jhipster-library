@@ -25,22 +25,17 @@ import tech.jhipster.web.util.HeaderUtil;
 import tech.jhipster.web.util.PaginationUtil;
 import tech.jhipster.web.util.ResponseUtil;
 
-/**
- * REST controller for managing {@link com.library.app.domain.Book}.
- */
 @RestController
 @RequestMapping("/api/books")
 public class BookResource {
 
     private static final Logger LOG = LoggerFactory.getLogger(BookResource.class);
-
     private static final String ENTITY_NAME = "book";
 
     @Value("${jhipster.clientApp.name}")
     private String applicationName;
 
     private final BookService bookService;
-
     private final BookRepository bookRepository;
 
     public BookResource(BookService bookService, BookRepository bookRepository) {
@@ -48,11 +43,8 @@ public class BookResource {
         this.bookRepository = bookRepository;
     }
 
-    /**
-     * {@code POST  /books} : Create a new book.
-     */
     @PostMapping("")
-    @PreAuthorize("hasAnyAuthority('ROLE_ADMIN','ROLE_LIBRARIAN')")
+    @PreAuthorize("hasAuthority('ROLE_ADMIN')")
     public ResponseEntity<BookDTO> createBook(@Valid @RequestBody BookDTO bookDTO) throws URISyntaxException {
         LOG.debug("REST request to save Book : {}", bookDTO);
         if (bookDTO.getId() != null) {
@@ -64,11 +56,8 @@ public class BookResource {
             .body(bookDTO);
     }
 
-    /**
-     * {@code PUT  /books/:id} : Updates an existing book.
-     */
     @PutMapping("/{id}")
-    @PreAuthorize("hasAnyAuthority('ROLE_ADMIN','ROLE_LIBRARIAN')")
+    @PreAuthorize("hasAuthority('ROLE_ADMIN')")
     public ResponseEntity<BookDTO> updateBook(
         @PathVariable(value = "id", required = false) final Long id,
         @Valid @RequestBody BookDTO bookDTO
@@ -80,22 +69,17 @@ public class BookResource {
         if (!Objects.equals(id, bookDTO.getId())) {
             throw new BadRequestAlertException("Invalid ID", ENTITY_NAME, "idinvalid");
         }
-
         if (!bookRepository.existsById(id)) {
             throw new BadRequestAlertException("Entity not found", ENTITY_NAME, "idnotfound");
         }
-
         bookDTO = bookService.update(bookDTO);
         return ResponseEntity.ok()
             .headers(HeaderUtil.createEntityUpdateAlert(applicationName, true, ENTITY_NAME, bookDTO.getId().toString()))
             .body(bookDTO);
     }
 
-    /**
-     * {@code PATCH  /books/:id} : Partial updates given fields of an existing book.
-     */
     @PatchMapping(value = "/{id}", consumes = { "application/json", "application/merge-patch+json" })
-    @PreAuthorize("hasAnyAuthority('ROLE_ADMIN','ROLE_LIBRARIAN')")
+    @PreAuthorize("hasAuthority('ROLE_ADMIN')")
     public ResponseEntity<BookDTO> partialUpdateBook(
         @PathVariable(value = "id", required = false) final Long id,
         @NotNull @RequestBody BookDTO bookDTO
@@ -107,24 +91,18 @@ public class BookResource {
         if (!Objects.equals(id, bookDTO.getId())) {
             throw new BadRequestAlertException("Invalid ID", ENTITY_NAME, "idinvalid");
         }
-
         if (!bookRepository.existsById(id)) {
             throw new BadRequestAlertException("Entity not found", ENTITY_NAME, "idnotfound");
         }
-
         Optional<BookDTO> result = bookService.partialUpdate(bookDTO);
-
         return ResponseUtil.wrapOrNotFound(
             result,
             HeaderUtil.createEntityUpdateAlert(applicationName, true, ENTITY_NAME, bookDTO.getId().toString())
         );
     }
 
-    /**
-     * {@code GET  /books} : get all the books.
-     */
+    // GET-urile rămân publice (anonim poate vedea)
     @GetMapping("")
-    @PreAuthorize("hasAnyAuthority('ROLE_ADMIN','ROLE_LIBRARIAN','ROLE_USER')")
     public ResponseEntity<List<BookDTO>> getAllBooks(
         @org.springdoc.core.annotations.ParameterObject Pageable pageable,
         @RequestParam(name = "eagerload", required = false, defaultValue = "true") boolean eagerload
@@ -140,22 +118,15 @@ public class BookResource {
         return ResponseEntity.ok().headers(headers).body(page.getContent());
     }
 
-    /**
-     * {@code GET  /books/:id} : get the "id" book.
-     */
     @GetMapping("/{id}")
-    @PreAuthorize("hasAnyAuthority('ROLE_ADMIN','ROLE_LIBRARIAN','ROLE_USER')")
     public ResponseEntity<BookDTO> getBook(@PathVariable("id") Long id) {
         LOG.debug("REST request to get Book : {}", id);
         Optional<BookDTO> bookDTO = bookService.findOne(id);
         return ResponseUtil.wrapOrNotFound(bookDTO);
     }
 
-    /**
-     * {@code DELETE  /books/:id} : delete the "id" book.
-     */
     @DeleteMapping("/{id}")
-    @PreAuthorize("hasAnyAuthority('ROLE_ADMIN','ROLE_LIBRARIAN')")
+    @PreAuthorize("hasAuthority('ROLE_ADMIN')")
     public ResponseEntity<Void> deleteBook(@PathVariable("id") Long id) {
         LOG.debug("REST request to delete Book : {}", id);
         bookService.delete(id);

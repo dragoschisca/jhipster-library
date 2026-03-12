@@ -31,7 +31,6 @@ import tech.jhipster.config.JHipsterProperties;
 public class SecurityConfiguration {
 
     private final Environment env;
-
     private final JHipsterProperties jHipsterProperties;
 
     public SecurityConfiguration(Environment env, JHipsterProperties jHipsterProperties) {
@@ -95,20 +94,16 @@ public class SecurityConfiguration {
                     .permitAll()
                     .requestMatchers(mvc.pattern("/api/account/reset-password/finish"))
                     .permitAll()
-                    // Books - pentru toti
-                    .requestMatchers(mvc.pattern(HttpMethod.GET, "/api/books"))
-                    .permitAll()
+                    // ✅ ANONIM: doar vizualizare cărți
                     .requestMatchers(mvc.pattern(HttpMethod.GET, "/api/books/**"))
                     .permitAll()
-                    // BorrowedBook - doar ADMIN si LIBRARIAN
+                    // ✅ BORROWED-BOOKS CRUD: Admin + Librarian
                     .requestMatchers(mvc.pattern("/api/borrowed-books/**"))
                     .hasAnyAuthority(AuthoritiesConstants.ADMIN, AuthoritiesConstants.LIBRARIAN)
                     // ADMIN
                     .requestMatchers(mvc.pattern("/api/admin/**"))
                     .hasAuthority(AuthoritiesConstants.ADMIN)
                     .requestMatchers(mvc.pattern("/v3/api-docs/**"))
-                    .hasAuthority(AuthoritiesConstants.ADMIN)
-                    .requestMatchers(mvc.pattern("/api/publishers/**"))
                     .hasAuthority(AuthoritiesConstants.ADMIN)
                     .requestMatchers(mvc.pattern("/api/**"))
                     .authenticated()

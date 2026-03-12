@@ -113,7 +113,7 @@ public class BorrowedBookResource {
     }
 
     @GetMapping("")
-    @PreAuthorize("hasAnyAuthority('ROLE_ADMIN','ROLE_LIBRARIAN','ROLE_USER')")
+    @PreAuthorize("hasAnyAuthority('ROLE_ADMIN','ROLE_LIBRARIAN')")
     public ResponseEntity<List<BorrowedBookDTO>> getAllBorrowedBooks(
         @org.springdoc.core.annotations.ParameterObject Pageable pageable,
         @RequestParam(name = "eagerload", required = false, defaultValue = "true") boolean eagerload
@@ -130,7 +130,7 @@ public class BorrowedBookResource {
     }
 
     @GetMapping("/{id}")
-    @PreAuthorize("hasAnyAuthority('ROLE_ADMIN','ROLE_LIBRARIAN','ROLE_USER')")
+    @PreAuthorize("hasAnyAuthority('ROLE_ADMIN','ROLE_LIBRARIAN')")
     public ResponseEntity<BorrowedBookDTO> getBorrowedBook(@PathVariable("id") Long id) {
         LOG.debug("REST request to get BorrowedBook : {}", id);
         Optional<BorrowedBookDTO> borrowedBookDTO = borrowedBookService.findOne(id);

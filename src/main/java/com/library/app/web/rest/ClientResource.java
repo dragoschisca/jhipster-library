@@ -25,9 +25,6 @@ import tech.jhipster.web.util.HeaderUtil;
 import tech.jhipster.web.util.PaginationUtil;
 import tech.jhipster.web.util.ResponseUtil;
 
-/**
- * REST controller for managing {@link com.library.app.domain.Client}.
- */
 @RestController
 @RequestMapping("/api/clients")
 public class ClientResource {
@@ -40,7 +37,6 @@ public class ClientResource {
     private String applicationName;
 
     private final ClientService clientService;
-
     private final ClientRepository clientRepository;
 
     public ClientResource(ClientService clientService, ClientRepository clientRepository) {
@@ -49,7 +45,7 @@ public class ClientResource {
     }
 
     @PostMapping("")
-    @PreAuthorize("hasAnyAuthority('ROLE_ADMIN','ROLE_LIBRARIAN')")
+    @PreAuthorize("hasAuthority('ROLE_ADMIN')")
     public ResponseEntity<ClientDTO> createClient(@Valid @RequestBody ClientDTO clientDTO) throws URISyntaxException {
         LOG.debug("REST request to save Client : {}", clientDTO);
         if (clientDTO.getId() != null) {
@@ -62,7 +58,7 @@ public class ClientResource {
     }
 
     @PutMapping("/{id}")
-    @PreAuthorize("hasAnyAuthority('ROLE_ADMIN','ROLE_LIBRARIAN')")
+    @PreAuthorize("hasAuthority('ROLE_ADMIN')")
     public ResponseEntity<ClientDTO> updateClient(
         @PathVariable(value = "id", required = false) final Long id,
         @Valid @RequestBody ClientDTO clientDTO
@@ -86,7 +82,7 @@ public class ClientResource {
     }
 
     @PatchMapping(value = "/{id}", consumes = { "application/json", "application/merge-patch+json" })
-    @PreAuthorize("hasAnyAuthority('ROLE_ADMIN','ROLE_LIBRARIAN')")
+    @PreAuthorize("hasAuthority('ROLE_ADMIN')")
     public ResponseEntity<ClientDTO> partialUpdateClient(
         @PathVariable(value = "id", required = false) final Long id,
         @NotNull @RequestBody ClientDTO clientDTO
@@ -112,7 +108,7 @@ public class ClientResource {
     }
 
     @GetMapping("")
-    @PreAuthorize("hasAnyAuthority('ROLE_ADMIN','ROLE_LIBRARIAN','ROLE_USER')")
+    @PreAuthorize("hasAuthority('ROLE_ADMIN')")
     public ResponseEntity<List<ClientDTO>> getAllClients(@org.springdoc.core.annotations.ParameterObject Pageable pageable) {
         LOG.debug("REST request to get a page of Clients");
         Page<ClientDTO> page = clientService.findAll(pageable);
@@ -121,7 +117,7 @@ public class ClientResource {
     }
 
     @GetMapping("/{id}")
-    @PreAuthorize("hasAnyAuthority('ROLE_ADMIN','ROLE_LIBRARIAN','ROLE_USER')")
+    @PreAuthorize("hasAuthority('ROLE_ADMIN')")
     public ResponseEntity<ClientDTO> getClient(@PathVariable("id") Long id) {
         LOG.debug("REST request to get Client : {}", id);
         Optional<ClientDTO> clientDTO = clientService.findOne(id);
@@ -129,7 +125,7 @@ public class ClientResource {
     }
 
     @DeleteMapping("/{id}")
-    @PreAuthorize("hasAnyAuthority('ROLE_ADMIN','ROLE_LIBRARIAN')")
+    @PreAuthorize("hasAuthority('ROLE_ADMIN')")
     public ResponseEntity<Void> deleteClient(@PathVariable("id") Long id) {
         LOG.debug("REST request to delete Client : {}", id);
         clientService.delete(id);
